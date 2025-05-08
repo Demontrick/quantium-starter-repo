@@ -2,9 +2,16 @@ import dash
 from dash import dcc, html, Input, Output
 import pandas as pd
 import plotly.express as px
+from pathlib import Path
 
 # Load the data
-df = pd.read_csv("data/pink_morsels_sales.csv")
+csv_path = Path(__file__).resolve().parent / "pink_morsels_sales.csv"
+if not csv_path.exists():
+    raise FileNotFoundError(f"CSV file not found at {csv_path}")
+
+print(f"Loading CSV from: {csv_path}")  # Optional: for debugging path
+
+df = pd.read_csv(csv_path)
 
 # Clean columns and date
 df.columns = df.columns.str.strip()
@@ -31,7 +38,7 @@ app.layout = html.Div([
             value='all',
             labelStyle={'display': 'inline-block', 'margin-right': '10px'}
         )
-    ], id='region-filter', style={'textAlign': 'center', 'margin-bottom': '20px'}),
+    ], style={'textAlign': 'center', 'margin-bottom': '20px'}),
 
     dcc.Graph(id='sales-graph')
 ])
